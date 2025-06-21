@@ -4,6 +4,7 @@ import { enemyPokemonNameCapital } from '../Game';
 
 function EnemyInfo() {
   const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div className="relative" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <img src={HPBarEnemy} alt="" className="w-120" />
