@@ -2,27 +2,8 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import GameVisual from './gameassets/GameVisual';
 import BattleMenu from './gameassets/BattleMenu';
-export const myPokemonName = 'hariyama';
-export const myPokemonNameCapital = myPokemonName.charAt(0).toUpperCase() + myPokemonName.slice(1).toLowerCase();
-export const enemyName = 'hooh';
-export const enemyPokemonNameCapital = enemyName.charAt(0).toUpperCase() + enemyName.slice(1).toLowerCase();
-
-const getPlaceholderPokemon = name => ({
-  name,
-  hp: 100,
-  attack: 50,
-  defense: 50,
-  specialAttack: 60,
-  specialDefense: 50,
-  speed: 70,
-  moves: [
-    { name: 'tackle', type: 'normal', power: 40 },
-    { name: 'flamethrower', type: 'fire', power: 90 },
-    { name: 'water-gun', type: 'water', power: 40 },
-    { name: 'quick-attack', type: 'normal', power: 40 }
-  ]
-});
-export const Context = React.createContext();
+import fetchPokemon from '../utils/fetchData';
+import GameContext from '../utils/Context';
 
 function Game() {
   const [playerPokemon, setPlayerPokemon] = useState(null);
@@ -38,8 +19,46 @@ function Game() {
 
   // Initial, hardcoded w/ placeholder
   useEffect(() => {
-    setPlayerPokemon(getPlaceholderPokemon('pikachu'));
-    setAiPokemon(getPlaceholderPokemon('charmander'));
+    const loadPokemon = async () => {
+      const data = await fetchPokemon();
+      if (!data) return;
+      console.log(data);
+      const playerEntry = 'pikachu';
+      // const playerEntry = data.results.find(p => p.name === myPokemonName);
+      // const aiEntry = data.results.find(p => p.name === enemyName);
+      const aiEntry = 'pikachu';
+
+      const dataFromApi = async url => {
+        const res = await fetch(url);
+        const fullData = await res.json();
+
+        const statMap = Object.fromEntries(fullData.stats.map(s => [s.stat.name, s.base_stat]));
+
+        const types = fullData.types.map(t => t.type.name);
+
+        return {
+          name: fullData.name,
+          hp: statMap['hp'],
+          attack: statMap['attack'],
+          defense: statMap['defense'],
+          specialAttack: statMap['special-attack'],
+          specialDefense: statMap['special-defense'],
+          speed: statMap['speed'],
+          types
+        };
+      };
+
+      if (playerEntry && aiEntry) {
+        const [playerFull, aiFull] = await Promise.all([dataFromApi(playerEntry.url), dataFromApi(aiEntry.url)]);
+
+        setPlayerPokemon(playerFull);
+        setAiPokemon(aiFull);
+      }
+    };
+
+    loadPokemon();
+    // setPlayerPokemon(getPlaceholderPokemon('pikachu'));
+    // setAiPokemon(getPlaceholderPokemon('charmander'));
   }, []);
 
   // If player selected move, AI selects automatically (moves later from fetch, not mock)
@@ -59,19 +78,15 @@ function Game() {
     }
   };
   return (
-    <Context.Provider value={[playerPokemon, setPlayerPokemon]}>
+    <GameContext.Provider value={[playerPokemon, setPlayerPokemon, aiPokemon, setAiPokemon]}>
       <div
         style={{ fontFamily: 'PokemonFont, sans-serif' }}
         className="w-[1200px] h-[800px] mx-auto mt-10 relative tracking-wider "
       >
         <GameVisual />
-        <BattleMenu
-          moves={playerPokemon?.moves || []}
-          onSelectMove={handlePlayerMoveSelect}
-          isLocked={isPlayerMoveLocked}
-        />
+        <BattleMenu />
       </div>
-    </Context.Provider>
+    </GameContext.Provider>
   );
 }
 

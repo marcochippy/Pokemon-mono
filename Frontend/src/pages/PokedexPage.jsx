@@ -1,30 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import fetchPokemon from '../utils/fetchData';
+import { transformPokemonName } from '../utils/transformPokemonName';
 
 function PokedexPage() {
   const [pokemonList, setPokemonList] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchPokemon() {
-      try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=300');
-        const data = await response.json();
-
-        const pokemonDetails = await Promise.all(
-          data.results.map(async pokemon => {
-            const res = await fetch(pokemon.url);
-            return await res.json();
-          })
-        );
-
-        setPokemonList(pokemonDetails);
-      } catch (error) {
-        console.error('Error fetching Pokémon:', error);
-      }
-    }
-
-    fetchPokemon();
+    const fetchingPokemon = async () => {
+      setPokemonList(await fetchPokemon());
+    };
+    fetchingPokemon();
   }, []);
 
   return (
@@ -45,7 +32,11 @@ function PokedexPage() {
             key={index}
             className="bg-white rounded-lg p-4 shadow-md hover:scale-105 transition transform text-center"
           >
-            <img src={pokemon.sprites.front_default} alt={pokemon.name} className="mx-auto w-20 h-20 mb-2" />
+            <img
+              src={`https://play.pokemonshowdown.com/sprites/gen5ani/${transformPokemonName(pokemon.name)}.gif`}
+              alt={pokemon.name}
+              className="mx-auto w-17 h-17 mb-2 object-contain pixelated"
+            />
             <h2 className="text-xl capitalize font-semibold mb-2">{pokemon.name}</h2>
             <p className="text-sm text-gray-600 mb-1"># {pokemon.id}</p>
             <p>

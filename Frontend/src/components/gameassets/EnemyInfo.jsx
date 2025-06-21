@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import HPBarEnemy from '../../assets/EnemyInfo.png';
-import { enemyPokemonNameCapital } from '../Game';
+import { capitalizePokemonName } from '../../utils/transformPokemonName';
+import { useContext } from 'react';
+import GameContext from '../../utils/Context';
 
 function EnemyInfo() {
+  const aiPokemon = useContext(GameContext);
   const [isHovered, setIsHovered] = useState(false);
   return (
     <div className="relative" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <img src={HPBarEnemy} alt="" className="w-120" />
       <div className="absolute text-[2.05rem] tracking-normal text-black bottom-17 left-8">
-        {enemyPokemonNameCapital}
+        {aiPokemon.name}
+        {/* {capitalizePokemonName(aiPokemon.name)} */}
       </div>
       <div
         className={`

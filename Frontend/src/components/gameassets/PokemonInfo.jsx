@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import HPBar from '../../assets/PokemonInfo.png';
-import { myPokemonNameCapital } from '../Game';
+import { capitalizePokemonName } from '../../utils/transformPokemonName';
+import { useContext } from 'react';
+import GameContext from '../../utils/Context';
 
 function PokemonInfo() {
+  const playerPokemon = useContext(GameContext);
+  console.log(playerPokemon);
   const [isHovered, setIsHovered] = useState(false);
   return (
     <div className="relative" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <img src={HPBar} alt="" className="w-120" />
-      <div className="absolute text-[1.9rem] tracking-normal text-black bottom-24 left-18">{myPokemonNameCapital}</div>
+      <div className="absolute text-[1.9rem] tracking-normal text-black bottom-24 left-18">
+        {playerPokemon.name}
+        {/* {capitalizePokemonName(playerPokemon.name)} */}
+      </div>
       <div className="absolute font-black text-[1.7rem] bottom-24 right-11">Lv.0</div>
       <div className="absolute font-black text-[1.7rem] bottom-5 right-23">20 / 20</div>
 
