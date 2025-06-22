@@ -16,7 +16,7 @@ function GameVisual() {
     // const playerLevel = parseFloat(localStorage.getItem('playerLevel')) || 1;
 
     const backgroundNumber = `background-${Math.floor(Math.random() * 8) + 1}.png`;
-    if (localStorage.getItem('playerLevel') > 1 && winner === 'player') {
+    if (localStorage.getItem('winningStreak') > 1 && winner === 'player') {
       setTimeout(() => {
         setBackground(backgroundNumber);
         console.log(backgroundNumber, winner);

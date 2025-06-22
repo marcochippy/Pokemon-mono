@@ -1,48 +1,49 @@
 import { useState, useEffect } from 'react';
+import { getLeaderboardEntry } from '../data';
 
 function LeaderboardPage() {
-//   const leaderboardData = [
-//     {
-//       position: 1,
-//       player: 'Ash',
-//       pokemon: 'Pikachu',
-//       streak: 12,
-//       rival: 'Charizard'
-//     },
-//     {
-//       position: 2,
-//       player: 'Misty',
-//       pokemon: 'Starmie',
-//       streak: 10,
-//       rival: 'Bulbasaur'
-//     },
-//     {
-//       position: 3,
-//       player: 'Brock',
-//       pokemon: 'Onix',
-//       streak: 9,
-//       rival: 'Pidgeotto'
-//     }
-//   ];
+  //   const leaderboardData = [
+  //     {
+  //       position: 1,
+  //       player: 'Ash',
+  //       pokemon: 'Pikachu',
+  //       streak: 12,
+  //       rival: 'Charizard'
+  //     },
+  //     {
+  //       position: 2,
+  //       player: 'Misty',
+  //       pokemon: 'Starmie',
+  //       streak: 10,
+  //       rival: 'Bulbasaur'
+  //     },
+  //     {
+  //       position: 3,
+  //       player: 'Brock',
+  //       pokemon: 'Onix',
+  //       streak: 9,
+  //       rival: 'Pidgeotto'
+  //     }
+  //   ];
 
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-      const res = await fetch('/leaderboard');
-      if (!res.ok) throw new Error('Failed to fetch leaderboard');
-      const data = await res.json();
-      setLeaderboard(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLeaderboard();
+    // const fetchLeaderboard = async () => {
+    //   try {
+    //   const res = await fetch('/leaderboard');
+    //   if (!res.ok) throw new Error('Failed to fetch leaderboard');
+    //   const data = await res.json();
+    //   setLeaderboard(data);
+    //   } catch (err) {
+    //     setError(err.message);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    getLeaderboardEntry();
   }, []);
 
   if (loading) {
